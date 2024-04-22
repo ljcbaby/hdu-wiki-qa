@@ -1,0 +1,30 @@
+# pgvector configuration
+postgresql:
+  host: "localhost"
+  port: 5432
+  username: "postgres"
+  password: "password"
+  database: "postgres"
+
+# api configuration
+# OpenAI or OneAPI
+api:
+  base_url: "https://api.openai.com"
+  api_key: "your-api-key"
+  chatbot_model: "gpt-3.5-turbo"
+  embedding_model: "text-embedding-v2"
+
+# model advanced configuration
+model:
+  similarity_threshold: 0.5
+  search_length: 2
+  system_prompt: "您是一名得力助手，请根据参考知识做出回应。"
+
+# wiki configuration
+wiki:
+  dir: "wiki"
+  format:
+    - "md"
+    - "txt"
+  exclude:
+    - "README.md"
