@@ -21,7 +21,7 @@ var (
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		logrus.Error(err)
+		logrus.Error(err.Error())
 		os.Exit(1)
 	}
 }
