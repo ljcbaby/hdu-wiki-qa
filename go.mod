@@ -39,7 +39,7 @@ require (
 )
 
 require (
-	github.com/lib/pq v1.10.9
+	github.com/oklog/ulid v1.3.1
 	github.com/pgvector/pgvector-go v0.1.1
 	github.com/spf13/viper v1.18.2
 	golang.org/x/sys v0.19.0 // indirect
