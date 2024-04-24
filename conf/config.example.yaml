@@ -11,7 +11,7 @@ postgresql:
 api:
   base_url: "https://api.openai.com"
   api_key: "your-api-key"
-  chatbot_model: "gpt-3.5-turbo"
+  chat_model: "gpt-3.5-turbo"
   embedding_model: "text-embedding-v2"
 
 # model advanced configuration

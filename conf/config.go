@@ -11,33 +11,31 @@ import (
 //go:embed config.example.yaml
 var configSample []byte
 
-var Config struct {
-	pgsql struct {
-		Host     string `yaml:"host"`
-		Port     int    `yaml:"port"`
-		User     string `yaml:"username"`
-		Password string `yaml:"password"`
-		Database string `yaml:"database"`
-	} `yaml:"postgresql"`
+var Pgsql struct {
+	Host     string
+	Port     int
+	User     string
+	Password string
+	Database string
+}
 
-	api struct {
-		BaseURL        string `yaml:"base_url"`
-		ApiKey         string `yaml:"api_key"`
-		ChatModel      string `yaml:"chatbot_model"`
-		EmbeddingModel string `yaml:"embedding_model"`
-	} `yaml:"api"`
+var Api struct {
+	BaseURL        string
+	ApiKey         string
+	ChatModel      string
+	EmbeddingModel string
+}
 
-	advanced struct {
-		SimilarityThreshold float64 `yaml:"similarity_threshold"`
-		SearchLength        int     `yaml:"search_length"`
-		SystemPrompt        string  `yaml:"system_prompt"`
-	} `yaml:"model"`
+var Advanced struct {
+	SimilarityThreshold float64
+	SearchLength        int
+	SystemPrompt        string
+}
 
-	wiki struct {
-		Dir     string   `yaml:"dir"`
-		format  []string `yaml:"format"`
-		exclude []string `yaml:"exclude"`
-	} `yaml:"wiki"`
+var Wiki struct {
+	Dir     string
+	format  []string
+	exclude []string
 }
 
 func Init(file string) {
@@ -56,14 +54,38 @@ func Init(file string) {
 	}
 
 	viper.SetConfigFile(file)
-	err := viper.ReadInConfig()
+	viper.AddConfigPath(".")
 
-	if err != nil {
+	if err := viper.ReadInConfig(); err != nil {
 		logrus.WithError(err).Fatalf("read config from %s failed", file)
 	}
 
-	err = viper.Unmarshal(&Config)
-	if err != nil {
-		logrus.WithError(err).Fatalf("unmarshal config failed")
+	setConfig()
+	if err := checkNecessary(); err != nil {
+		logrus.WithError(err).Fatalf("set config failed")
+		os.Exit(1)
 	}
+}
+
+func setConfig() error {
+	Pgsql.Host = viper.GetString("postgresql.host")
+	Pgsql.Port = viper.GetInt("postgresql.port")
+	Pgsql.User = viper.GetString("postgresql.username")
+	Pgsql.Password = viper.GetString("postgresql.password")
+	Pgsql.Database = viper.GetString("postgresql.database")
+
+	Api.BaseURL = viper.GetString("api.base_url")
+	Api.ApiKey = viper.GetString("api.api_key")
+	Api.ChatModel = viper.GetString("api.chat_model")
+	Api.EmbeddingModel = viper.GetString("api.embedding_model")
+
+	Advanced.SimilarityThreshold = viper.GetFloat64("model.similarity_threshold")
+	Advanced.SearchLength = viper.GetInt("model.search_length")
+	Advanced.SystemPrompt = viper.GetString("model.system_prompt")
+
+	Wiki.Dir = viper.GetString("wiki.dir")
+	Wiki.format = viper.GetStringSlice("wiki.format")
+	Wiki.exclude = viper.GetStringSlice("wiki.exclude")
+
+	return nil
 }
