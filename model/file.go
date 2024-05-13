@@ -10,7 +10,8 @@ import (
 
 type FileRecord struct {
 	Id           string `gorm:"column:id;primaryKey;not null;type:char(26)"` // ULID
-	FileName     string `gorm:"column:file_name;not null;type:varchar"`      // File title with full path
+	FilePath     string `gorm:"column:file_path;not null;type:varchar"`      // File path
+	FileTitle    string `gorm:"column:file_title;not null;type:varchar"`     // File title with full visit path
 	SHA1         string `gorm:"column:sha1;not null;type:char(40)"`          // File SHA1
 	LastModified int64  `gorm:"column:last_modified;not null;type:bigint"`   // modify time
 }

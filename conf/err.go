@@ -63,10 +63,10 @@ func checkNecessary() error {
 	if Wiki.Dir == "" {
 		return ErrEmptyWikiDir
 	}
-	if len(Wiki.format) == 0 {
+	if len(Wiki.Format) == 0 {
 		return ErrEmptyWikiFormat
 	}
-	if len(Wiki.exclude) == 0 {
+	if len(Wiki.Exclude) == 0 {
 		return ErrEmptyWikiExclude
 	}
 	return nil

@@ -34,8 +34,8 @@ var Advanced struct {
 
 var Wiki struct {
 	Dir     string
-	format  []string
-	exclude []string
+	Format  []string
+	Exclude []string
 }
 
 func Init(file string) {
@@ -84,8 +84,8 @@ func setConfig() error {
 	Advanced.SystemPrompt = viper.GetString("model.system_prompt")
 
 	Wiki.Dir = viper.GetString("wiki.dir")
-	Wiki.format = viper.GetStringSlice("wiki.format")
-	Wiki.exclude = viper.GetStringSlice("wiki.exclude")
+	Wiki.Format = viper.GetStringSlice("wiki.format")
+	Wiki.Exclude = viper.GetStringSlice("wiki.exclude")
 
 	return nil
 }
