@@ -12,9 +12,13 @@ import (
 func listFiles(fileList *[]string) {
 	conf := conf.Wiki
 
-	os.Chdir(conf.Dir)
+	err := os.Chdir(conf.Dir)
+	if err != nil {
+		logrus.WithError(err).Fatalf("change dir to %s failed", conf.Dir)
+		return
+	}
 
-	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
+	err = filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}

@@ -1,6 +1,9 @@
 package generate
 
-import "github.com/sirupsen/logrus"
+import (
+	"github.com/ljcbaby/hdu-wiki-qa/model"
+	"github.com/sirupsen/logrus"
+)
 
 func Init() {
 	logrus.Info("init generate")
@@ -8,5 +11,8 @@ func Init() {
 	var fileList []string
 	listFiles(&fileList)
 
-	logrus.Info("file list: ", fileList)
+	var fileRecords []model.FileRecord
+	checkFiles(&fileList, &fileRecords)
+
+	logrus.Info("records: ", fileRecords)
 }
