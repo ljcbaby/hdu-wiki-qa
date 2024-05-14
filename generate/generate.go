@@ -6,7 +6,7 @@ import (
 )
 
 func Init() {
-	logrus.Info("init generate")
+	logrus.WithField("module", "generate").Info("init generate")
 
 	var fileList []string
 	listFiles(&fileList)
@@ -14,5 +14,5 @@ func Init() {
 	var fileRecords []model.FileRecord
 	checkFiles(&fileList, &fileRecords)
 
-	logrus.Info("records: ", fileRecords)
+	logrus.WithField("module", "generate").Info("records: ", fileRecords)
 }

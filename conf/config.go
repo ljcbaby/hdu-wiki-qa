@@ -41,15 +41,15 @@ var Wiki struct {
 func Init(file string) {
 	if _, err := os.Stat(file); err != nil {
 		if !os.IsNotExist(err) {
-			logrus.WithError(err).Fatalf("get stat of %s failed", file)
+			logrus.WithField("module", "config").WithError(err).Fatalf("get stat of %s failed", file)
 		}
-		logrus.Infof("config not existed, creating at %s", file)
+		logrus.WithField("module", "config").Infof("config not existed, creating at %s", file)
 		created, err := os.Create(file)
 		if err != nil {
-			logrus.WithError(err).Fatalf("create config at %s failed", file)
+			logrus.WithField("module", "config").WithError(err).Fatalf("create config at %s failed", file)
 		}
 		if _, err := created.Write(configSample); err != nil {
-			logrus.WithError(err).Fatalf("write config at %s failed", file)
+			logrus.WithField("module", "config").WithError(err).Fatalf("write config at %s failed", file)
 		}
 	}
 
@@ -57,12 +57,12 @@ func Init(file string) {
 	viper.AddConfigPath(".")
 
 	if err := viper.ReadInConfig(); err != nil {
-		logrus.WithError(err).Fatalf("read config from %s failed", file)
+		logrus.WithField("module", "config").WithError(err).Fatalf("read config from %s failed", file)
 	}
 
 	setConfig()
 	if err := checkNecessary(); err != nil {
-		logrus.WithError(err).Fatalf("set config failed")
+		logrus.WithField("module", "config").WithError(err).Fatalf("set config failed")
 		os.Exit(1)
 	}
 }

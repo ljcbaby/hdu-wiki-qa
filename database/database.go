@@ -25,14 +25,16 @@ func Connect() error {
 	DB, err = gorm.Open(postgres.New(postgres.Config{
 		DSN:                  dsn,
 		PreferSimpleProtocol: true,
-	}), &gorm.Config{})
+	}), &gorm.Config{
+		Logger: &LogrusLogger{logger: logrus.StandardLogger()},
+	})
 	if err != nil {
-		logrus.WithError(err).Fatalf("connect to db failed")
+		logrus.WithField("module", "database").WithError(err).Fatalf("connect to db failed")
 		os.Exit(1)
 	}
 
 	if err := DB.AutoMigrate(&model.QApair{}, &model.FileRecord{}); err != nil {
-		logrus.WithError(err).Fatalf("auto migrate failed")
+		logrus.WithField("module", "database").WithError(err).Fatalf("auto migrate failed")
 		os.Exit(1)
 	}
 

@@ -14,7 +14,7 @@ func listFiles(fileList *[]string) {
 
 	err := os.Chdir(conf.Dir)
 	if err != nil {
-		logrus.WithError(err).Fatalf("change dir to %s failed", conf.Dir)
+		logrus.WithField("module", "generate").WithError(err).Fatalf("change dir to %s failed", conf.Dir)
 		return
 	}
 
@@ -50,7 +50,7 @@ func listFiles(fileList *[]string) {
 	})
 
 	if err != nil {
-		logrus.WithError(err).Fatalf("walk dir failed")
+		logrus.WithField("module", "generate").WithError(err).Fatalf("walk dir failed")
 	}
 }
 

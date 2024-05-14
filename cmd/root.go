@@ -21,12 +21,18 @@ var (
 func Execute() {
 	err := rootCmd.Execute()
 	if err != nil {
-		logrus.Error(err.Error())
+		logrus.WithField("module", "cmd").WithError(err).Error("execute command failed")
 		os.Exit(1)
 	}
 }
 
 func init() {
 	rootCmd.PersistentFlags().BoolP("verbose", "v", false, "Verbose output")
+	rootCmd.PersistentPreRun = func(cmd *cobra.Command, args []string) {
+		verbose, _ := cmd.Flags().GetBool("verbose")
+		if verbose {
+			logrus.SetLevel(logrus.DebugLevel)
+		}
+	}
 	rootCmd.PersistentFlags().StringVarP(&config, "config", "c", "config.yaml", "config file path")
 }
