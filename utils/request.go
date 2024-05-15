@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"time"
 
 	"github.com/ljcbaby/hdu-wiki-qa/conf"
 	"github.com/ljcbaby/hdu-wiki-qa/model"
@@ -60,6 +61,26 @@ func ChatRequest(system string, user string) (string, error) {
 	}
 	defer resp.Body.Close()
 
+	if resp.StatusCode == http.StatusTooManyRequests {
+		logrus.WithField("module", "utils").Warn("chat rate limit exceeded, waiting for 30 seconds")
+		time.Sleep(30 * time.Second)
+		resp, err = client.Do(req)
+		if err != nil {
+			return "", fmt.Errorf("failed to send request to API Endpoint: %v", err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode == http.StatusTooManyRequests {
+			logrus.WithField("module", "utils").Warn("chat rate limit exceeded, waiting for 1 minute")
+			time.Sleep(1 * time.Minute)
+			resp, err = client.Do(req)
+			if err != nil {
+				return "", fmt.Errorf("failed to send request to API Endpoint: %v", err)
+			}
+			defer resp.Body.Close()
+		}
+	}
+
 	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return "", fmt.Errorf("failed to read response body: %v", err)
@@ -106,6 +127,27 @@ func EmbeddingRequest(input string) (pgvector.Vector, error) {
 	resp, err := client.Do(req)
 	if err != nil {
 		return pgvector.Vector{}, fmt.Errorf("failed to send request to API Endpoint: %v", err)
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode == http.StatusTooManyRequests {
+		logrus.WithField("module", "utils").Warn("embedding rate limit exceeded, waiting for 30 seconds")
+		time.Sleep(30 * time.Second)
+		resp, err = client.Do(req)
+		if err != nil {
+			return pgvector.Vector{}, fmt.Errorf("failed to send request to API Endpoint: %v", err)
+		}
+		defer resp.Body.Close()
+
+		if resp.StatusCode == http.StatusTooManyRequests {
+			logrus.WithField("module", "utils").Warn("embedding rate limit exceeded, waiting for 1 minute")
+			time.Sleep(1 * time.Minute)
+			resp, err = client.Do(req)
+			if err != nil {
+				return pgvector.Vector{}, fmt.Errorf("failed to send request to API Endpoint: %v", err)
+			}
+			defer resp.Body.Close()
+		}
 	}
 
 	respBody, err := io.ReadAll(resp.Body)

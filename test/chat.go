@@ -6,7 +6,7 @@ import (
 )
 
 func Chat() {
-	s, err := utils.ChatRequest("", "你是什么模型。")
+	s, err := utils.ChatRequest("", "你是什么模型？")
 	if err != nil {
 		logrus.WithField("module", "test").WithError(err).Error("chat request failed")
 		return
