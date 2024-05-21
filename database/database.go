@@ -33,9 +33,20 @@ func Connect() error {
 		os.Exit(1)
 	}
 
+	debug := false
+
+	if logrus.GetLevel() == logrus.DebugLevel {
+		debug = true
+		logrus.SetLevel(logrus.InfoLevel)
+	}
+
 	if err := DB.AutoMigrate(&model.QAPair{}, &model.FileRecord{}); err != nil {
 		logrus.WithField("module", "database").WithError(err).Fatalf("auto migrate failed")
 		os.Exit(1)
+	}
+
+	if debug {
+		logrus.SetLevel(logrus.DebugLevel)
 	}
 
 	return nil

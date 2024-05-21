@@ -155,15 +155,15 @@ func EmbeddingRequest(input string) (pgvector.Vector, error) {
 		return pgvector.Vector{}, fmt.Errorf("failed to read response body: %v", err)
 	}
 
-	logrus.WithField("module", "utils").Debugf("response: %s", respBody)
-
 	if resp.StatusCode != http.StatusOK {
+		logrus.WithField("module", "utils").Debugf("response: %s", respBody)
 		return pgvector.Vector{}, fmt.Errorf("request failed with status code: %d", resp.StatusCode)
 	}
 
 	var response model.EmbeddingResponse
 	err = json.Unmarshal(respBody, &response)
 	if err != nil {
+		logrus.WithField("module", "utils").Debugf("response: %s", respBody)
 		return pgvector.Vector{}, fmt.Errorf("failed to unmarshal response: %v", err)
 	}
 
