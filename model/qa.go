@@ -39,3 +39,8 @@ func (qa *QApair) BeforeSave(db *gorm.DB) error {
 
 	return nil
 }
+
+type QAResponse struct {
+	Question string `json:"Q"`
+	Answer   string `json:"A"`
+}
