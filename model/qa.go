@@ -8,7 +8,7 @@ import (
 	"gorm.io/gorm"
 )
 
-type QApair struct {
+type QAPair struct {
 	Id                string          `gorm:"column:id;primaryKey;not null;type:char(26)"` // ULID
 	Question          string          `gorm:"column:question;not null;type:varchar"`
 	Answer            string          `gorm:"column:answer;not null;type:varchar"`
@@ -17,11 +17,11 @@ type QApair struct {
 	FileID            string          `gorm:"column:file_id;not null;type:char(26)"` // File ULID
 }
 
-func (QApair) TableName() string {
+func (QAPair) TableName() string {
 	return "qa_items"
 }
 
-func (qa *QApair) BeforeSave(db *gorm.DB) error {
+func (qa *QAPair) BeforeSave(db *gorm.DB) error {
 	if _, err := ulid.Parse(qa.Id); err != nil {
 		return fmt.Errorf("invalid ULID: %s", err)
 	}

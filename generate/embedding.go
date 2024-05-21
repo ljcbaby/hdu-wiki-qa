@@ -74,7 +74,7 @@ func generateEmbedding(tx *gorm.DB, str string, fileId string) error {
 	}
 
 	for _, qa := range qas {
-		pair := model.QApair{
+		pair := model.QAPair{
 			Id:       ulid.MustNew(ulid.Now(), rand.Reader).String(),
 			Question: qa.Question,
 			Answer:   qa.Answer,

@@ -33,7 +33,7 @@ func Connect() error {
 		os.Exit(1)
 	}
 
-	if err := DB.AutoMigrate(&model.QApair{}, &model.FileRecord{}); err != nil {
+	if err := DB.AutoMigrate(&model.QAPair{}, &model.FileRecord{}); err != nil {
 		logrus.WithField("module", "database").WithError(err).Fatalf("auto migrate failed")
 		os.Exit(1)
 	}
