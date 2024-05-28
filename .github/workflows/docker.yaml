@@ -1,4 +1,4 @@
-name: goreleaser
+name: docker-releaser
 
 on:
   push:
@@ -9,7 +9,7 @@ permissions:
   contents: write
 
 jobs:
-  goreleaser:
+  docker-releaser:
     runs-on: ubuntu-latest
     steps:
       -
@@ -19,15 +19,16 @@ jobs:
           fetch-depth: 0
       -
         name: Login to Docker registry
-        if: success()
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
-        name: Build and push Docker image
+        name: Build Docker image
         if: success()
-        run: |
-            docker build -t ghcr.io/${{ github.repository }}:${{ github.ref/refs\/tags\// }} .
-            docker push ghcr.io/${{ github.repository }}:${{ github.ref/refs\/tags\// }}
+        run: docker build -t ghcr.io/${{ github.repository }}:${{ github.ref }} .
+      -
+        name: Push Docker image
+        if: success()
+        run: docker push ghcr.io/${{ github.repository }}:${{ github.ref }}
