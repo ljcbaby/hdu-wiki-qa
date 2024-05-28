@@ -39,6 +39,11 @@ func processFile(file model.FileRecord) error {
 		return fmt.Errorf("save file record failed: %w", err)
 	}
 
+	if err := tx.Where("file_id = ?", file.Id).Delete(&model.QAPair{}).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("delete old qa pairs failed: %w", err)
+	}
+
 	for _, text := range texts {
 		err := generateEmbedding(tx, text, file.Id)
 		if err != nil {
