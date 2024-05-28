@@ -55,3 +55,8 @@ func (e *Embedding) UnmarshalJSON(data []byte) error {
 	e.Vector = pgvector.NewVector(arr)
 	return nil
 }
+
+type ApiResponse struct {
+	RawContent string `json:"raw_content"`
+	Reply      string `json:"reply"`
+}

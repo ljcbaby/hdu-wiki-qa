@@ -28,3 +28,8 @@ wiki:
     - "txt"
   exclude:
     - "README.md"
+
+# service configuration
+service:
+  host: localhost
+  port: 8080

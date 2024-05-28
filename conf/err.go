@@ -21,6 +21,9 @@ var (
 	ErrEmptyWikiDir     error = errors.New("empty wiki dir")
 	ErrEmptyWikiFormat  error = errors.New("empty wiki format")
 	ErrEmptyWikiExclude error = errors.New("empty wiki exclude")
+
+	ErrEmptyServiceHost error = errors.New("empty service host")
+	ErrEmptyServicePort error = errors.New("empty service port")
 )
 
 func checkNecessary() error {
@@ -68,6 +71,12 @@ func checkNecessary() error {
 	}
 	if len(Wiki.Exclude) == 0 {
 		return ErrEmptyWikiExclude
+	}
+	if Service.Host == "" {
+		return ErrEmptyServiceHost
+	}
+	if Service.Port == 0 {
+		return ErrEmptyServicePort
 	}
 	return nil
 }

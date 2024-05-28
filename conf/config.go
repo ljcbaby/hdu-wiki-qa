@@ -38,6 +38,11 @@ var Wiki struct {
 	Exclude []string
 }
 
+var Service struct {
+	Host string
+	Port int
+}
+
 func Init(file string) {
 	if _, err := os.Stat(file); err != nil {
 		if !os.IsNotExist(err) {
@@ -86,6 +91,9 @@ func setConfig() error {
 	Wiki.Dir = viper.GetString("wiki.dir")
 	Wiki.Format = viper.GetStringSlice("wiki.format")
 	Wiki.Exclude = viper.GetStringSlice("wiki.exclude")
+
+	Service.Host = viper.GetString("service.host")
+	Service.Port = viper.GetInt("service.port")
 
 	return nil
 }
