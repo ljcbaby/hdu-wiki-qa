@@ -60,22 +60,31 @@ func processFile(file model.FileRecord) error {
 }
 
 func generateEmbedding(tx *gorm.DB, str string, fileId string) error {
-	res, err := utils.ChatRequest("你是一个正在学习知识库的机器人，会学习输入的文段并将其转化为如下json格式的问答对输出。尽可能覆盖文段的主要信息。\n\n[\n{\n\"Q\": \"string\",\n\"A\": \"string\"\n}\n]",
-		str)
-	if err != nil {
-		return fmt.Errorf("chat request failed: %w", err)
-	}
-
 	var qas []model.QAResponse
 
-	if strings.HasPrefix(res, "```json") {
-		res = strings.TrimPrefix(res, "```json")
-		res = strings.TrimSuffix(res, "```")
+	for max_retry := 5; max_retry > 0; max_retry-- {
+		res, err := utils.ChatRequest("你是一个正在学习知识库的机器人，会学习输入的文段并将其转化为如下json格式的问答对输出。尽可能覆盖文段的主要信息。\n\n[\n{\n\"Q\": \"string\",\n\"A\": \"string\"\n}\n]",
+			str)
+		if err != nil {
+			return fmt.Errorf("chat request failed: %w", err)
+		}
+
+		if strings.HasPrefix(res, "```json") {
+			res = strings.TrimPrefix(res, "```json")
+			res = strings.TrimSuffix(res, "```")
+		}
+
+		err = json.Unmarshal([]byte(res), &qas)
+		if err != nil {
+			logrus.WithField("module", "generate").Errorf("json unmarshal failed: %s, retry", err)
+			continue
+		}
+
+		break
 	}
 
-	err = json.Unmarshal([]byte(res), &qas)
-	if err != nil {
-		return fmt.Errorf("unmarshal failed: %w", err)
+	if len(qas) == 0 {
+		return fmt.Errorf("no qa pairs generated")
 	}
 
 	for _, qa := range qas {
