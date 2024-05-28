@@ -18,7 +18,7 @@ builds:
     env:
       - CGO_ENABLED=0
     ldflags:
-      - -s -w -X github.com/ljcbaby/hdu-wiki-qa/cmd.Version={{.Version}}
+      - -s -w -X github.com/ljcbaby/hdu-wiki-qa/cmd.version={{.Version}}
     goos:
       - linux
     goarch:
