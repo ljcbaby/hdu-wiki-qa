@@ -63,7 +63,7 @@ func generateEmbedding(tx *gorm.DB, str string, fileId string) error {
 	var qas []model.QAResponse
 
 	for max_retry := 5; max_retry > 0; max_retry-- {
-		res, err := utils.ChatRequest("你是一个正在学习知识库的机器人，会学习输入的文段并将其转化为如下json格式的问答对输出。尽可能覆盖文段的主要信息。\n\n[\n{\n\"Q\": \"string\",\n\"A\": \"string\"\n}\n]",
+		res, err := utils.ChatRequest("你是一个正在学习知识库的机器人，会学习输入的文段并将其转化为如下json格式的问答对输出。尽可能覆盖文段的主要信息。\n\n[{\"Q\": \"string\",\"A\": \"string\"}]",
 			str)
 		if err != nil {
 			return fmt.Errorf("chat request failed: %w", err)
@@ -164,4 +164,29 @@ func sliceText(text string, length int) []string {
 	}
 
 	return texts
+}
+
+func cleanFile(file model.FileRecord) error {
+	logrus.WithField("module", "generate").WithField("file", file.FilePath).Debugf("clean file")
+
+	tx := database.DB.Begin()
+	if tx.Error != nil {
+		return fmt.Errorf("begin transaction failed: %w", tx.Error)
+	}
+
+	if err := tx.Where("file_id = ?", file.Id).Delete(&model.QAPair{}).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("delete qa pairs failed: %w", err)
+	}
+
+	if err := tx.Delete(&file).Error; err != nil {
+		tx.Rollback()
+		return fmt.Errorf("delete file record failed: %w", err)
+	}
+
+	if err := tx.Commit().Error; err != nil {
+		return fmt.Errorf("commit transaction failed: %w", err)
+	}
+
+	return nil
 }

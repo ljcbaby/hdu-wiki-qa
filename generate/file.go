@@ -15,8 +15,12 @@ import (
 	"gorm.io/gorm"
 )
 
-func checkFiles(fileList *[]string, fileRecords *[]model.FileRecord) {
+func checkFiles(fileList *[]string, fileRecords *[]model.FileRecord, rmRecords *[]model.FileRecord) {
 	db := database.DB
+
+	if err := db.Find(&rmRecords).Error; err != nil {
+		logrus.WithField("module", "generate").WithError(err).Fatalf("query file records failed")
+	}
 
 	for _, file := range *fileList {
 		record := new(model.FileRecord)
@@ -54,6 +58,13 @@ func checkFiles(fileList *[]string, fileRecords *[]model.FileRecord) {
 			logrus.WithField("module", "generate").Infof("file %s is modified", file)
 			record.SHA1 = hash
 			*fileRecords = append(*fileRecords, *record)
+		}
+
+		for i, rmRecord := range *rmRecords {
+			if rmRecord.Id == record.Id {
+				*rmRecords = append((*rmRecords)[:i], (*rmRecords)[i+1:]...)
+				break
+			}
 		}
 	}
 }
