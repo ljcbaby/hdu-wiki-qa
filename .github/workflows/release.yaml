@@ -32,17 +32,3 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           # Your GoReleaser Pro key, if you are using the 'goreleaser-pro' distribution
           # GORELEASER_KEY: ${{ secrets.GORELEASER_KEY }}
-      -
-        name: Login to Docker registry
-        if: success()
-        uses: docker/login-action@v2
-        with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Build and push Docker image
-        if: success()
-        run: |
-          docker build -t ghcr.io/${{ github.repository }}:${{ github.ref }} .
-          docker push ghcr.io/${{ github.repository }}:${{ github.ref }}
