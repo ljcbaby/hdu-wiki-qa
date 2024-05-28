@@ -3,7 +3,7 @@ name: docker-releaser
 on:
   push:
     tags:
-      - '*'
+      - "*"
 
 permissions:
   contents: write
@@ -33,7 +33,12 @@ jobs:
         run: echo "TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
 
       - name: Build Docker image
-        run: docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ env.TAG }} .
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ env.TAG }} .
+          docker tag ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ env.TAG }} ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
 
-      - name: Push Docker image
+      - name: Push Docker image with version tag
         run: docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:${{ env.TAG }}
+
+      - name: Push Docker image with latest tag
+        run: docker push ghcr.io/${{ github.repository_owner }}/${{ github.repository }}:latest
